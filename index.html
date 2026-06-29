@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RadarPet - App</title>
+<meta name="description" content="RadarPet em formato app para cadastro e localização de pets com upload de fotos.">
+<meta name="theme-color" content="#FF7A2F">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="assets/icon-192.svg">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=7">
+</head>
+<body>
+<div class="phone">
+  <section class="auth-screen" id="auth-screen" aria-labelledby="auth-title">
+    <div class="auth-hero">
+      <div class="auth-badge">Radar comunitário para pets perdidos</div>
+      <div class="auth-logo">
+        <div class="auth-logo-icon">RP</div>
+        <div>
+          <div class="auth-logo-text">Radar<span>Pet</span></div>
+          <p class="auth-logo-copy">Ajude a divulgar animais perdidos, encontrados e disponíveis para adoção na sua cidade.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="auth-card">
+      <div class="auth-card-copy">
+        <h1 id="auth-title">Entre para cuidar da rede de resgate</h1>
+        <p>Use sua conta social para publicar pets, acompanhar a comunidade e manter seu cadastro salvo com segurança.</p>
+      </div>
+
+      <div class="auth-provider-list" id="auth-provider-list">
+        <button class="auth-provider auth-provider-google" type="button" data-auth-provider="google">
+          <span class="auth-provider-mark">G</span>
+          <span>Entrar com Google</span>
+        </button>
+        <button class="auth-provider auth-provider-facebook" type="button" data-auth-provider="facebook">
+          <span class="auth-provider-mark">f</span>
+          <span>Entrar com Facebook</span>
+        </button>
+        <button class="auth-provider auth-provider-github" type="button" data-auth-provider="github">
+          <span class="auth-provider-mark">{ }</span>
+          <span>Entrar com GitHub</span>
+        </button>
+      </div>
+
+      <button class="auth-guest-button" id="guest-access-button" type="button">Explorar sem login</button>
+
+      <div class="auth-help" id="auth-help">
+        Preencha o arquivo <code>auth-config.js</code> para ativar os provedores sociais reais.
+      </div>
+    </div>
+
+    <div class="auth-panel-grid">
+      <article class="auth-panel">
+        <strong>Para quem perdeu um pet</strong>
+        <p>Publique rapidamente foto, cidade e telefone para aumentar a chance de reencontro.</p>
+      </article>
+      <article class="auth-panel">
+        <strong>Para quem encontrou</strong>
+        <p>Busque animais por cidade, status e espécie e fale direto com o tutor.</p>
+      </article>
+    </div>
+  </section>
+
+  <div class="app-shell" id="app-shell" hidden>
+    <div class="status-bar">
+      <span>RadarPet</span>
+      <span id="status-session-label">Sessão protegida</span>
+    </div>
+
+    <div class="header">
+      <div class="logo-wrap">
+        <div class="logo-icon">RP</div>
+        <div class="logo-text">Radar<span>Pet</span></div>
+      </div>
+      <div class="header-actions">
+        <div class="session-pill" id="session-pill">
+          <div class="session-avatar" id="session-avatar">RP</div>
+          <div class="session-meta">
+            <strong id="session-user-name">Visitante</strong>
+            <span id="session-user-provider">Explorando o app</span>
+          </div>
+        </div>
+        <button class="logout-btn" id="logout-button" type="button">Sair</button>
+      </div>
+    </div>
+
+    <div class="search-wrap">
+      <div class="search-bar">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FF9A5C" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input id="app-search" type="search" placeholder="Buscar pets, cidades ou raças..." aria-label="Buscar pets cadastrados">
+      </div>
+    </div>
+
+    <div class="nav-tabs">
+      <div class="tab active" onclick="showScreen('feed')"><span class="tab-icon">Início</span>Feed</div>
+      <div class="tab" onclick="showScreen('mapa')"><span class="tab-icon">Mapa</span>Radar</div>
+      <div class="tab" onclick="showScreen('achados')"><span class="tab-icon">Lista</span>Status</div>
+      <div class="tab" onclick="showScreen('match')"><span class="tab-icon">Match</span>PetMatch</div>
+      <div class="tab" onclick="showScreen('ongs')"><span class="tab-icon">ONGs</span>Apoio</div>
+    </div>
+
+    <div class="screen active" id="screen-feed">
+      <div class="story-row">
+        <button class="story shortcut-story" type="button" data-action="open-report">
+          <div class="story-ring">+</div>
+          <div class="story-name">Cadastrar</div>
+        </button>
+        <button class="story shortcut-story" type="button" data-action="focus-search">
+          <div class="story-ring">?</div>
+          <div class="story-name">Buscar</div>
+        </button>
+        <button class="story shortcut-story" type="button" data-action="show-screen" data-target-screen="mapa">
+          <div class="story-ring">M</div>
+          <div class="story-name">Mapa</div>
+        </button>
+        <button class="story shortcut-story" type="button" data-action="show-screen" data-target-screen="achados">
+          <div class="story-ring">S</div>
+          <div class="story-name">Status</div>
+        </button>
+        <button class="story shortcut-story" type="button" data-action="show-screen" data-target-screen="ongs">
+          <div class="story-ring match-ring">O</div>
+          <div class="story-name">ONGs</div>
+        </button>
+      </div>
+
+      <div class="alert-banner" data-action="open-report">
+        <div class="alert-icon">Foto</div>
+        <div class="alert-text">
+          <div class="alert-title">Cadastre um pet com foto</div>
+          <div class="alert-sub">Organize os registros da comunidade e acelere os reencontros.</div>
+        </div>
+        <button class="alert-action" type="button">Cadastrar</button>
+      </div>
+
+      <div class="alert-banner alert-banner-lost" data-action="open-report-lost">
+        <div class="alert-icon">Alerta</div>
+        <div class="alert-text">
+          <div class="alert-title">Anunciar pet desaparecido</div>
+          <div class="alert-sub">Publique rapidamente e aumente as chances de reencontro.</div>
+        </div>
+        <button class="alert-action" type="button">Anunciar</button>
+      </div>
+
+      <div class="feed" id="feed-list"></div>
+    </div>
+
+    <div class="screen screen-map" id="screen-mapa">
+      <div class="filter-row">
+        <button class="chip on" type="button" data-map-filter="all">Todos</button>
+        <button class="chip" type="button" data-map-filter="lost">Perdidos</button>
+        <button class="chip" type="button" data-map-filter="found">Encontrados</button>
+        <button class="chip" type="button" data-map-filter="available">Disponíveis</button>
+      </div>
+      <div class="big-map" id="radar-map" data-action="map">
+        <svg width="100%" height="100%" viewBox="0 0 316 200" aria-hidden="true">
+          <rect width="316" height="200" fill="#E8F5E9"/>
+          <rect x="0" y="88" width="316" height="14" fill="#CFD8DC" opacity="0.7"/>
+          <rect x="110" y="0" width="14" height="200" fill="#CFD8DC" opacity="0.7"/>
+          <rect x="0" y="148" width="316" height="10" fill="#CFD8DC" opacity="0.5"/>
+          <rect x="60" y="0" width="8" height="200" fill="#CFD8DC" opacity="0.4"/>
+          <rect x="210" y="0" width="8" height="200" fill="#CFD8DC" opacity="0.4"/>
+          <rect x="20" y="20" width="30" height="30" rx="6" fill="#A5D6A7" opacity="0.5"/>
+          <rect x="160" y="110" width="40" height="28" rx="6" fill="#A5D6A7" opacity="0.5"/>
+          <circle cx="130" cy="95" r="9" fill="#FF7A2F" stroke="white" stroke-width="2.5"/>
+          <text x="130" y="99" text-anchor="middle" font-size="8" fill="white" font-weight="bold">Você</text>
+          <circle cx="130" cy="95" r="18" fill="none" stroke="#FF7A2F" stroke-width="1.5" opacity="0.3"/>
+        </svg>
+        <div class="map-overlay">
+          <strong>RadarPet por cidade</strong>
+          <span>Os pets cadastrados aparecem listados abaixo do mapa.</span>
+        </div>
+      </div>
+      <div class="section-label">Pets no radar</div>
+      <div class="map-nearby-list" id="map-nearby-list"></div>
+    </div>
+
+    <div class="screen" id="screen-achados">
+      <div class="filter-block">
+        <div class="filter-row compact-filter-row">
+          <button class="chip on" type="button" data-lost-filter="all">Todos</button>
+          <button class="chip" type="button" data-lost-filter="lost">Perdidos</button>
+          <button class="chip" type="button" data-lost-filter="found">Encontrados</button>
+          <button class="chip" type="button" data-lost-filter="available">Disponíveis</button>
+        </div>
+      </div>
+      <div class="section-label">Pets cadastrados</div>
+      <div class="lf-list" id="lost-found-list"></div>
+      <div class="screen-action">
+        <button class="report-btn" type="button" onclick="openReportModal()">Cadastrar Pet</button>
+      </div>
+    </div>
+
+    <div class="screen" id="screen-match">
+      <div class="match-highlight">
+        <div class="match-label-row">
+          <div class="match-label">PetMatch</div>
+          <span class="match-soon-badge">Beta</span>
+        </div>
+        <div class="match-copy">Conecte-se com tutores de pets da mesma raça disponíveis na plataforma. Confirme sempre a saúde e vacinação com um veterinário antes de qualquer aproximação.</div>
+      </div>
+      <div class="match-list" id="match-list"></div>
+    </div>
+
+    <div class="screen" id="screen-ongs">
+      <div class="section-label">ONGs parceiras</div>
+      <div class="ong-list" id="ong-list"></div>
+    </div>
+
+    <div class="bottom-nav">
+      <div class="bnav-item active" id="bnav-feed" onclick="showScreen('feed')"><span class="bnav-icon">Home</span>Início</div>
+      <div class="bnav-item" id="bnav-mapa" onclick="showScreen('mapa')"><span class="bnav-icon">Geo</span>Mapa</div>
+      <div class="bnav-item fab-wrap" onclick="openReportModal()">
+        <div class="bnav-center">+</div>
+      </div>
+      <div class="bnav-item" id="bnav-match" onclick="showScreen('match')"><span class="bnav-icon">Love</span>Match</div>
+      <div class="bnav-item" id="bnav-ongs" onclick="showScreen('ongs')"><span class="bnav-icon">ONG</span>ONGs</div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="report-modal" aria-hidden="true">
+  <form class="report-modal" id="report-form">
+    <div class="modal-head">
+      <div>
+        <strong>Cadastrar pet</strong>
+        <span>Preencha os dados e envie a foto para o RadarPet</span>
+      </div>
+      <button type="button" class="modal-close" onclick="closeReportModal()" aria-label="Fechar">x</button>
+    </div>
+
+    <label>
+      Nome
+      <input name="name" type="text" placeholder="Ex: Thor" required>
+    </label>
+
+    <label>
+      Nome do tutor
+      <input name="ownerName" type="text" placeholder="Ex: Maria Silva" required>
+    </label>
+
+    <label>
+      Espécie
+      <select name="species" required>
+        <option value="">Selecione</option>
+        <option value="Cachorro">Cachorro</option>
+        <option value="Gato">Gato</option>
+        <option value="Outro">Outro</option>
+      </select>
+    </label>
+
+    <label>
+      Raça
+      <input name="breed" type="text" placeholder="Ex: SRD" required>
+    </label>
+
+    <div class="form-grid-two">
+      <label>
+        Sexo
+        <select name="sex" required>
+          <option value="">Selecione</option>
+          <option value="Macho">Macho</option>
+          <option value="Femea">Fêmea</option>
+        </select>
+      </label>
+      <label>
+        Status
+        <select name="status" required>
+          <option value="">Selecione</option>
+          <option value="Perdido">Perdido</option>
+          <option value="Encontrado">Encontrado</option>
+          <option value="Disponivel">Disponível</option>
+        </select>
+      </label>
+    </div>
+
+    <label>
+      Cor predominante
+      <input name="color" type="text" placeholder="Ex: Caramelo" required>
+    </label>
+
+    <label>
+      Cidade
+      <input name="city" type="text" placeholder="Ex: Blumenau, SC" required>
+    </label>
+
+    <label>
+      Telefone para contato
+      <input name="phone" type="tel" placeholder="(47) 99999-9999" inputmode="tel" maxlength="20" required>
+    </label>
+
+    <label>
+      Foto
+      <input id="pet-photo-input" name="photo" type="file" accept="image/*" required>
+    </label>
+
+    <div class="upload-preview-wrap">
+      <div class="upload-preview" id="upload-preview">
+        <span>Pré-visualização da foto</span>
+      </div>
+      <div class="upload-feedback" id="upload-feedback">Selecione uma imagem para enviar ao Cloudinary.</div>
+    </div>
+
+    <label class="consent-row">
+      <input id="legal-consent" name="legalConsent" type="checkbox" required>
+      <span>Li e concordo com os <a href="termos.html" target="_blank" rel="noopener noreferrer">Termos de Uso</a> e a <a href="privacidade.html" target="_blank" rel="noopener noreferrer">Política de Privacidade</a>.</span>
+    </label>
+
+    <label class="honeypot-field" aria-hidden="true" tabindex="-1">
+      Não preencha este campo
+      <input name="website" type="text" autocomplete="off" tabindex="-1">
+    </label>
+
+    <button class="modal-submit" id="report-submit-button" type="submit">Salvar pet</button>
+  </form>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+
+<div class="info-modal-backdrop" id="info-modal" aria-hidden="true">
+  <section class="info-modal" role="dialog" aria-modal="true" aria-labelledby="info-modal-title">
+    <div class="modal-head">
+      <div>
+        <strong id="info-modal-title">RadarPet</strong>
+        <span id="info-modal-subtitle">Detalhes</span>
+      </div>
+      <button type="button" class="modal-close" data-action="close-info" aria-label="Fechar">x</button>
+    </div>
+    <p id="info-modal-body"></p>
+    <button class="modal-submit" type="button" data-action="close-info">Entendi</button>
+  </section>
+</div>
+
+<footer class="app-footer">
+  <a href="termos.html" target="_blank" rel="noopener noreferrer">Termos de Uso</a>
+  <span>•</span>
+  <a href="privacidade.html" target="_blank" rel="noopener noreferrer">Política de Privacidade</a>
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+<script src="auth-config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
